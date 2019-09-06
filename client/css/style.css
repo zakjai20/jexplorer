@@ -1,0 +1,218 @@
+*{
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+:root{
+    --C_prim : rgb(134, 255, 208);
+    --C_bg   : rgb(165, 165, 165);
+    --C_btn  : rgb(28, 124, 250);
+}
+body{
+    background: var(--C_bg);
+}
+.app{
+    width: 600px;
+    min-height: 100px;
+    border-radius: 10px;
+    background: var(--C_prim);
+    margin: 60px calc((100% - 600px) / 2);
+    user-select: none;
+}
+
+.app .head {
+    position: relative;
+    width: 100%;
+    padding: 10px;
+    text-align: center;
+    border-bottom: 2px solid var(--C_bg);
+}
+.app .head:hover .add {
+    opacity: 1;
+}
+.app .head .back {
+    position: absolute;
+    text-align: center;
+    width: 20px;
+    height: 20px;
+    padding: 4px;
+    left: 20px;
+    border-radius: 50%;
+    line-height: 12px;
+    background: beige;
+    cursor: pointer;
+}
+.app .head .add {
+    float: right;
+    padding: 2px;
+    width: 20px;
+    height: 20px;
+    line-height: 16px;
+    border-radius: 50%;
+    background: var(--C_bg);
+    border: 1px solid;
+    border-color: transparent;
+    opacity: 0;
+    transition: all 1s;
+    cursor: cell;
+    user-select: none;
+}
+.app .head .add:hover {
+    background: salmon;
+}
+.app .head .add:active {
+    border: 1px solid orange;
+    transition: all .4s;
+}
+.app .head .histori {
+    float: left;
+    margin-left: 40px;
+}
+.app .body {
+    padding: 20px;
+}
+.body .form {
+    user-select: none;
+    border: 1px solid;
+    border-color: transparent;
+    position: relative;
+    padding: 10px;
+    border-radius: 4px;
+    background: rgba(118, 255, 203, 1);
+    margin-bottom: 10px;
+    transition: border 0.4s;
+}
+.body .form:hover {
+    border: 1px solid rgb(89, 209, 163);
+    transition: .4;
+}
+.body .form:nth-last-child(1) {
+    margin-bottom: 0;
+}
+
+/* .body .form .file{
+
+} */
+.body .form .img{
+    width: 20px;
+    position: relative;
+    top: 2px;
+}
+.body .form .name {
+    margin: 0 10px;
+    position: relative;
+    top: -3px;
+}
+.body .form .dir{
+    position: absolute;
+    width: 140px;
+    right: 140px;
+    padding: 4px 10px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    top: 9px;
+    background-color: rgb(117, 255, 203);
+    transition: all .4s;
+    outline: none;
+}
+.body .form .dir:hover{
+    border: 1px solid rgba(0,0,0,.4);
+}
+.body .form .dir:focus{
+    width: 410px;
+    transition: all .4s;
+}
+.body .form .btn[status="notyet"]:hover {
+    box-shadow: 0px 0px 10px rgba(136, 136, 136,.4);
+    cursor: not-allowed;
+}
+.body .form .btn[status="ready"]:hover {
+    box-shadow: 0px 0px 10px rgba(165, 165, 165,.4);
+    cursor: pointer;
+}
+.body .form .btn[status="waiting"]:hover {
+    box-shadow: 0px 0px 10px rgba(86, 156, 247,.4);
+    cursor: progress;
+}
+.body .form .btn[status="success"]:hover {
+    box-shadow: 0px 0px 10px rgba(37, 253, 127,.4);
+    cursor: not-allowed;
+}
+.body .form .btn[status="error"]:hover {
+    box-shadow: 0px 0px 10px rgba(255, 88, 22,.4);
+    cursor: not-allowed;
+}
+.body .form .btn {
+    position: absolute;
+    border: 2px solid;
+    border-color: transparent;
+    right: 60px;
+    top: 6px;
+    color: var(--C_bg);
+    padding: 4px 8px;
+    border-radius: 8px;
+    background: var(--C_btn);
+    transition: all .4s;
+    cursor: pointer;
+}
+.body .form .btn.dwn {
+    display: none;
+    top: 7px;
+    right: 10px;
+    opacity: 0;
+    transition: all .4s;
+}
+.body .form:hover .btn.dwn {
+    display: block;
+    opacity: 1;
+    transition: all .4s;
+}
+.body .form .btn.del {
+    display: none;
+    top: 7px;
+    right: 110px;
+    opacity: 0;
+    transition: all .4s;
+    background: rgb(252, 65, 65);
+}
+.body .form:hover .btn.del {
+    display: block;
+    opacity: 1;
+    transition: all .4s;
+}
+.body .form .btn:hover {
+    border: 2px solid rgba(0,0,0,.2);
+    transition: all .4s;
+}
+.body .form .btn:hover:active {
+    box-shadow: 0 0 6px  2px inset rgba(165, 165, 165,.2)
+}
+.body .form .btn[status="notyet"]{background: rgb(136, 136, 136);}
+.body .form .btn[status="ready"]{background: var(--C_btn);}
+.body .form .btn[status="waiting"]{background: rgb(113, 174, 255);}
+.body .form .btn[status="success"]{background: rgb(37, 253, 127);}
+.body .form .btn[status="error"]{background: rgb(255, 88, 22);}
+.body .form .rmv{
+    position: absolute;
+    text-align: center;
+    line-height: 18px;
+    border: 1px solid;
+    color: burlywood;
+    border-color: transparent;
+    width: 20px;
+    height: 20px;
+    right: 10px;
+    top: 12px;
+    border-radius: 50%;
+    background: var(--C_bg);
+    transition: all .4s;
+    opacity: 0;
+    cursor: pointer;
+}
+.body .form .rmv:active{
+    border: 1px solid orangered;
+}
+.body .form:hover .rmv{
+    opacity: 1;
+    transition: all 1s;
+}

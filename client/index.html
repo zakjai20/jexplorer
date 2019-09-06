@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Data Center</title>
+    <script src="./js/init.js"></script>
+    <style>
+        *{
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+        body{
+            background: rgb(100, 100, 100);
+        }
+        .app {
+            position: relative;
+            width: 400px;
+            height: 60px;
+            background: burlywood;
+            overflow: hidden;
+            border-radius: 10px;
+            margin: 120px calc((100% - 400px) / 2);
+            text-align: center;
+        }
+        a{
+            background: burlywood;
+            text-decoration: none;
+            height: 100%;
+            width: 200px;
+            color: aquamarine;
+            line-height: 60px;
+            transition: all .05s;
+        }
+        a:hover{
+            background: chartreuse;
+            color: brown;
+            transition: all .4s;
+            transform: scale(1.5)
+        }
+        a:first-child{
+            float: left;
+            border-right: 1px solid rgb(100, 100, 100);
+        }
+        a:last-child{
+            float: right;
+            border-left: 1px solid rgb(100, 100, 100);
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <a href="/downloads.html">Downloads</a><a href="/uploads.html">Uploads</a>
+    </div>
+    <script>
+        if(!(location.href.lastIndexOf('/') === location.href.length -1)){
+            location.href = location.href + "/"
+        }
+        var jr = new JRequest("./getinfo",undefined,true);
+        jr.get("",({response})=>{
+            console.log(response);
+            
+            var {dwn,upl} = response;
+            var [d,u] = document.querySelectorAll('a');
+            d.href = `.${dwn}`;
+            u.href = `.${upl}`;
+        },"json")
+    </script>
+</body>
+</html>

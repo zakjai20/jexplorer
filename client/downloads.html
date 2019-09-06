@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Download</title>
+    <script src="./js/init.js"></script>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <div class="app">
+        <div class="head"><span class="back"> < </span><span class="histori"></span>Download Files</div>
+        <div class="body">
+        </div>
+    </div>
+    <script>
+        if(!window.query.explorer){
+            window.location.search = `?explorer=/`;
+        }
+        var body = document.querySelector('.body');
+        var back = document.querySelector('.back');
+        var pathHistori = document.querySelector('.head .histori');
+
+        function getPath(explorer){
+            if(!explorer){
+                var {explorer} = window.query;
+            }
+            var arr = explorer.split('/');
+            var atxt= []
+            if(!(arr.length === 2 && arr[0] === "" && arr[1] === "")){
+                for(var i=0; i<arr.length; i++){
+                    var li        = arr.length - i;
+                    var explorer  = arr.slice(0,li).join('/');
+                    var key       = arr[li-1];
+                    var search    = `?explorer=${explorer}`;
+                    // log({explorer, key, search, li});
+                    atxt.unshift({explorer, key, search});
+                }
+                atxt[0] = {explorer:"/", key:"$home", search:"?explorer=/"};
+            }else{
+                atxt = [{explorer:"/", key:"$home", search:"?explorer=/"}];
+            }
+            // atxt.unshift('/');
+            // var atxt1 = atxt.map((e)=>{
+            //     return `?explorer=${e}`;
+            // })
+            atxt.forEach(({key, search})=>{
+                var span  = document.createElement('span');
+                var slash = document.createElement('span');
+                slash.innerHTML = " / ";
+                span.innerHTML  = key;
+                span.addEventListener('click',()=>{
+                    window.location.search = search;
+                })
+                pathHistori.appendChild(span);
+                pathHistori.appendChild(slash);
+            })
+            
+        }
+        
+        back.addEventListener('click', (e)=>{
+            var {explorer} = query;
+            explorer = explorer.split('/');
+            if(explorer.length>2){
+                explorer.pop()
+                explorer = explorer.join('/');
+            }else{
+                explorer = "/"
+            }
+            window.location.search = `?explorer=${explorer}`
+        })
+        function getDir(){
+            var {explorer} = window.query;
+            var Fxhr = new JRequest(`./download?explorer=${explorer}`,undefined,true);
+            Fxhr.post(null,({response,status})=>{
+                if(status === 200){
+                    var {status,data} = response;
+                    data.forEach((file)=>{
+                        var {type,name} = file;
+                        explorer = explorer === "/" ? "" : explorer;
+                        var href     = `./explorer${explorer}/${name}`;
+                        var search   = `?explorer=${explorer}/${name}`;
+                        var form     = document.JCreate('div.form',{type});
+                        var img      = document.JCreate('img.img',{src:"#"});
+                        var Name     = document.JCreate(`span{${name.length>50? name.slice(0,50)+"..." : name}}.name`,{type,url:href,title:name});
+                        var del      = document.JCreate('a{Delete}.del.btn',{href:"#",title: `delete ${type === "D"? "directory":"file"} : ${name}`});
+
+                        form.appendChild(img);
+                        form.appendChild(Name);
+                        
+                        if(type === "F"){
+                            var dwn = document.JCreate('a{Downloads}.dwn.btn',{download:'',href,title:name});
+                            img.src = "./img/F.png";
+                            form.appendChild(dwn);
+                        }else if (type === "D"){
+                            img.src = "./img/D.png";
+                            // Name.setAttribute('root',explorer);
+                            // Name.setAttribute('name',name);
+                        }
+
+                        form.appendChild(del);
+
+                        body.appendChild(form);
+                        Name.addEventListener('click',(e)=>{
+                            var type = Name.getAttribute('type');
+                            if(type === "F"){
+                                var a    = document.JCreate('a',{href,target:"_blank"});
+                                a.click();
+                            }else if(type === "D"){
+                                window.location.search = search;
+                            }
+                        })
+                        del.addEventListener('click', (e)=>{
+                            e.preventDefault();
+                            if(confirm(`are you sure you want to delete ${type === "D"? "directory":"file"} : ${name}`)){
+                                var Dxhr = new JRequest(`./delete?targit=${explorer}/${name}&type=${type}`, undefined, true);
+                                Dxhr.post(null,({response,status})=>{
+                                    if(status == 200){
+                                        console.log({status, response})
+                                        location.reload();
+                                    }else{
+                                        console.log({status, response})
+                                    }
+                                }, "json")
+                            }
+                        })
+                    })
+                }
+            },"json");
+        }
+        getPath();
+        getDir();
+    </script>
+</body>
+</html>

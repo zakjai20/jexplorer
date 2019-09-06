@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Upload</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <script src="./js/init.js"></script>
+</head>
+<body>
+    <div class="app">
+        <div class="head">
+            Upload Files
+            <span class="add">+</span>
+        </div>
+        <div class="body">
+        </div>
+    </div>
+    <script>
+        var add_btn = document.querySelector('.add');
+        add_btn.addEventListener('click',function(e){
+            var body      = document.querySelector('.app .body');
+            var form      = document.JCreate('div.form');
+            var fileinput = document.JCreate('input.file',{type:"file"});
+            var dirinput  = document.JCreate('input.dir',{type:"text"});
+            var send      = document.JCreate('span{SEND}.btn',{status:'notyet'});
+            var remove    = document.JCreate('span{X}.rmv');
+
+            var data;
+            var datasplit;
+
+            var mode = 1;
+            var dir;
+
+            dirinput.value = "1,/";
+
+            form.appendChild(fileinput);
+            form.appendChild(dirinput);
+            form.appendChild(send);
+            form.appendChild(remove);
+            body.appendChild(form);
+
+            remove.addEventListener('click',function(e){
+                body.removeChild(form)
+            })
+
+            function changedir(){
+                var [m,...d] = dirinput.value.split(',');
+                if(m){
+                    var n = Number(m);
+                    mode = n === NaN ? 1 : n;
+                }else{
+                    mode = 1
+                }
+                dir = d.join(',').trim();
+            }
+
+            fileinput.addEventListener('change',(e)=>{
+                changedir();
+                var fr    = new FileReader();
+                var files = [...e.target.files]
+                files.forEach((file)=>{
+                    var {name, type, size} = file;
+                    fr.readAsDataURL(file);
+                    fr.addEventListener('load',(f)=>{
+                        var base64 = f.target.result.split(',')[1];
+                        if(mode === 1){
+                            data = {
+                                data : base64,
+                                name,
+                                size,
+                                type
+                            };
+                        }
+                        if(mode === 2){
+                            datasplit = splitFile(base64, 5000000);
+                        }
+                        send.setAttribute('status','ready');
+                    })
+                })
+            })
+
+            send.addEventListener('click',(e)=>{
+                changedir();
+                log({dir, mode, datasplit, data})
+                if(send.getAttribute('status') === "ready"){
+                    send.setAttribute('status',"waiting");
+
+                    if(mode === 1){
+                        var Fxhr = new JRequest(`./upload?dir=${dir}`,undefined,true);
+                        send.setAttribute('status',"waiting");
+                        Fxhr.post(JSON.stringify(data),(d)=>{
+                            var {status} = d.response;
+                            send.setAttribute('status',status);
+                        },"json");
+                    }
+                    
+                    if(mode === 2){
+                        var getid = new JRequest(`./getid?mode=1`,undefined,true);
+                        getid.get("",({response})=>{
+                            id = response.id;
+                            if(id){
+                                sendData(id);
+                            }else{
+                                send.setAttribute('status',response.status);
+                            }
+                        },'json');
+                    }
+
+                    function sendData(id){
+                        var Fxhr = new JRequest(`./upload_step_by_step`,undefined,true);
+                        var oneperiod = datasplit.shift();
+                        var SData = {
+                            data : oneperiod,
+                            name : fileinput.files[0].name,
+                            encoding : "base64",
+                            dir,
+                            id
+                        }
+                        if(!datasplit.length){
+                            SData.status = 'OK';
+                        }
+
+                        Fxhr.post(JSON.stringify(SData),({response})=>{
+                            log({response})
+                            var {status} = response;
+                            if(status === "success"){
+                                sendData(id);
+                            }
+                            if(status === "OK"){
+                                send.setAttribute('status',"success");
+                            }
+                            if(status === "error"){
+                                send.setAttribute('status',status);
+                            }
+                        },'json')
+                    }
+                }
+            })
+        })
+        add_btn.click();
+        function splitFile(str,c=50000){
+            var arr = []
+            for(var i=0; i<str.length; i+=c){
+                arr.push(str.slice(i,i+c));
+            }
+            return arr
+        }
+    </script>
+</body>
+<script>
+</script>
+</html>
