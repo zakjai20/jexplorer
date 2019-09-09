@@ -6,8 +6,8 @@ const fs = require('fs');
 const {Router, static} = express;
 
 
-const {generateID} = require('../jtools');
-const newP = require('../jnewp');
+const {generateID} = require('jz-tools');
+const newP = require('jnewp');
 
 var log = console.log;
 
