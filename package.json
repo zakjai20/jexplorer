@@ -1,7 +1,7 @@
 {
   "name": "jexplorer",
   "version": "1.0.0",
-  "description": "",
+  "description": "\"# jexplorer\" \r \"# jexplorer\" \r \"# jexplorer\" \r \"# jexplorer\" \r \"# jexplorer\"",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -10,5 +10,14 @@
     "express": "^4.17.1"
   },
   "author": "JZ",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zakjai20/jexplorer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/zakjai20/jexplorer/issues"
+  },
+  "homepage": "https://github.com/zakjai20/jexplorer#readme"
 }
